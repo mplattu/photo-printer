@@ -1,7 +1,9 @@
+import '../css/index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { Camera } from './lib/camera.ts'
 import { Communicator } from './lib/communicator.ts'
+import { UISetup } from './lib/uisetup.ts'
 
 const DEFAULT_SERVER_URL = '/server.php'
 
@@ -18,11 +20,13 @@ const getServerURL = (): string => {
 }
 
 window.addEventListener('load', async () => {
+    const uiSetup = new UISetup('video', 'videoTarget') // eslint-disable-line
+
     const communicator = new Communicator(getServerURL(), 'message')
 
     const camera = new Camera('video', 'canvas')
     if (camera.isCameraAvailable()) {
-        camera.startCamera()
+        await camera.startCamera()
     }
     else {
         alert("No camera")

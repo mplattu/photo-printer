@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="index.js"></script>
     <link rel="stylesheet" href="index.css">
-    <style>
-        #video {
-            width: 100%;
-        }
-
-        #canvas {
-            display: none;
-        }
-    </style>
 </head>
 
 <body>
-    <video id="video" autoplay playsinline></video>
+    <div id="videoContainer">
+        <video id="video" autoplay playsinline></video>
+        <div id="videoTarget"></div>
+    </div>
     <button type="button" id="takePhoto" class="btn btn-primary">Take photo</button>
     <div id="message"></div>
     <canvas id="canvas"></canvas>

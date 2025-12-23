@@ -1,0 +1,27 @@
+#videoContainer {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#video {
+    display: block;
+    position: absolute;
+}
+
+#videoTarget {
+    border: 3px solid red;
+    display: block;
+    position: absolute; 
+}
+
+#canvas {
+    display: none;
+}
+
+#takePhoto {
+    z-index: 1;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
