@@ -1,0 +1,13 @@
+{
+    "config": {
+        "vendor-dir": "build/vendor"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/backend/"
+        }
+    },
+    "require": {
+        "fpdf/fpdf": "^1.86"
+    }
+}
