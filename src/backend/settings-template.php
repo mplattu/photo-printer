@@ -11,6 +11,7 @@ $SETTINGS = [
     'imagesVerticallyOnPaper' => 4,
     'paperMarginLeftAndTopMM' => 10,
     'paperImageSizeMM' => 46,
+    'imageMaxDimensionPX' => 1024,
     'tempOriginalImages' => sys_get_temp_dir() . '/photo-printer/original',
     'tempQueuingImages' => sys_get_temp_dir() . '/photo-printer/queue',
     'tempFinalPDFs' => sys_get_temp_dir() . '/photo-printer/pdf',

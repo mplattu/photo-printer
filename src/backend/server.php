@@ -95,6 +95,20 @@ function processImage(string $sourceFilename, object $settings): void {
         throw new \Exception("Source image file does not contain an image: $sourceFilename");
     }
 
+    cropImage($image);
+    scaleImage($image, $settings);
+
+    $queueFilename = getFilename($settings->get('tempQueuingImages'), 'png');
+    if (!imagepng($image,$queueFilename)) {
+        throw new \Exception("Cannot write image file to queue: $queueFilename");
+    }
+
+    if (!unlink($sourceFilename)) {
+        throw new \Exception("Could not unlink source image file: $sourceFilename");
+    }
+}
+
+function cropImage(&$image) {
     $imageWidth = imagesx($image);
     $imageHeight = imagesy($image);
 
@@ -109,13 +123,21 @@ function processImage(string $sourceFilename, object $settings): void {
 
     $croppedImage = imagecrop($image, $cropParameters);
 
-    $queueFilename = getFilename($settings->get('tempQueuingImages'), 'png');
-    if (!imagepng($croppedImage,$queueFilename)) {
-        throw new \Exception("Cannot write image file to queue: $queueFilename");
+    $image = $croppedImage;
+}
+
+function scaleImage(&$image, object $settings) {
+    $imageWidth = imagesx($image);
+
+    if ($imageWidth > $settings->get('imageMaxDimensionPX')) {
+        $image = imagescale($image, $settings->get('imageMaxDimensionsPX'), -1);
     }
 
-    if (!unlink($sourceFilename)) {
-        throw new \Exception("Could not unlink source image file: $sourceFilename");
+    $imageHeight = imagesy($image);
+    if ($imageHeight > $settings->get('imageMaxDimensionPX')) {
+        $scale = $settings->get('imageMaxDimensionPX') / $imageHeight;
+        $imageWidth = imagesx($image);
+        $image = imagescale($image, $imageWidth * $scale, $settings->get('imageMaxDimensionPX'));
     }
 }
 
