@@ -12,7 +12,10 @@ build/vendor/autoload.php: composer.phar composer.lock composer.json
 	if [ -d build/vendor/ ]; then rm -fR build/vendor/; fi
 	./composer.phar install
 
-build/server.php: build/vendor/autoload.php src/backend/server.php
+build/settings.php:
+	if [ ! -f build/settings.php ]; then cp src/backend/settings-template.php build/settings.php; fi
+
+build/server.php: build/vendor/autoload.php src/backend/server.php build/settings.php
 	cp src/backend/server.php build/
 
 build/index.html: src/html/*
