@@ -4,6 +4,7 @@ $IMAGE_PATH = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'photo-printer-webapp/'
 
 $ONPAPER_IMAGES_HORISONTALLY = 6;
 $ONPAPER_IMAGES_VERTICALLY = 4;
+$PRINTER_URI = 'ipp://192.168.4.10/ipp';
 
 require __DIR__ . DIRECTORY_SEPARATOR .'vendor/autoload.php';
 
@@ -29,7 +30,7 @@ if (isset($_FILES['image'])) {
     }
 }
 
-if ($result['success'] && paperPrinted($IMAGE_PATH, $ONPAPER_IMAGES_HORISONTALLY, $ONPAPER_IMAGES_VERTICALLY)) {
+if ($result['success'] && paperPrinted($IMAGE_PATH, $ONPAPER_IMAGES_HORISONTALLY, $ONPAPER_IMAGES_VERTICALLY, $PRINTER_URI)) {
     $result['message'] = 'Check the printer!';
 }
 
@@ -91,7 +92,7 @@ function processImage(string $sourceFilename, string $destinationFilename): void
     }
 }
 
-function paperPrinted(string $imagePath, int $imagesHorisontally, int $imagesVertically): bool {
+function paperPrinted(string $imagePath, int $imagesHorisontally, int $imagesVertically, string $printerURI): bool {
     $filenames = glob($imagePath . DIRECTORY_SEPARATOR . '*.png');
     $imagesPerSheet = $imagesHorisontally * $imagesVertically;
 
@@ -102,6 +103,8 @@ function paperPrinted(string $imagePath, int $imagesHorisontally, int $imagesVer
     $pdfString = createImagePDF($filenames, $imagesHorisontally, $imagesVertically);
 
     file_put_contents('/tmp/photo-printer.pdf', $pdfString);
+    printToIPPQueue($printerURI, $pdfString);
+
     return true;
 }
 
@@ -122,9 +125,13 @@ function createImagePDF(array $filenames, int $imagesHorisontally, int $imagesVe
             $currentImage++;
         }
     }
-
  
     $pdfString = $pdf->Output('S');
 
     return $pdfString;
+}
+
+function printToIPPQueue(string $printerURI, string $pdfDocument): void {
+    $printer = new \obray\ipp\Printer($printerURI);
+    $printer->printJob($pdfDocument, 1, ['document-format' => 'application/pdf']);
 }

@@ -8,6 +8,7 @@
         }
     },
     "require": {
-        "fpdf/fpdf": "^1.86"
+        "fpdf/fpdf": "^1.86",
+        "obray/ipp": "dev-master"
     }
 }

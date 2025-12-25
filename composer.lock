@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97a5a1165e7e612c4b9584c399e97892",
+    "content-hash": "64ad6451808ec81281484f0e767de473",
     "packages": [
         {
             "name": "fpdf/fpdf",
@@ -58,12 +58,52 @@
                 "source": "https://github.com/coreydoughty/Fpdf/tree/1.86.1"
             },
             "time": "2025-12-08T14:03:59+00:00"
+        },
+        {
+            "name": "obray/ipp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nateobray/IPP.git",
+                "reference": "3c5241f2fc4200169ad94391e003c6c9b3f3a16d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nateobray/IPP/zipball/3c5241f2fc4200169ad94391e003c6c9b3f3a16d",
+                "reference": "3c5241f2fc4200169ad94391e003c6c9b3f3a16d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "obray\\ipp\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP implemntation of the Internet Printing Protocol (IPP)",
+            "support": {
+                "issues": "https://github.com/nateobray/IPP/issues",
+                "source": "https://github.com/nateobray/IPP/tree/master"
+            },
+            "time": "2024-01-15T19:23:20+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "obray/ipp": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
