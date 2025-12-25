@@ -8,7 +8,7 @@ composer.phar:
 lint-js:
 	npx eslint "src/js/**"
 
-build/vendor/autoload.php: composer.phar composer.lock
+build/vendor/autoload.php: composer.phar composer.lock composer.json
 	if [ -d build/vendor/ ]; then rm -fR build/vendor/; fi
 	./composer.phar install
 
