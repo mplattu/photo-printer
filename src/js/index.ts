@@ -7,7 +7,7 @@ import { Camera } from './lib/camera.ts'
 import { Communicator } from './lib/communicator.ts'
 import { UISetup } from './lib/uisetup.ts'
 
-const DEFAULT_SERVER_URL = '/server.php'
+const DEFAULT_SERVER_URL = 'server.php'
 
 const getServerURL = (): string => {
     const url = new URL(window.location.href)
