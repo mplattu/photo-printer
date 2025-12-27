@@ -27,11 +27,24 @@ if (isset($_FILES['image'])) {
     }
 }
 
-if ($result['success'] && paperPrinted($settings)) {
+if ($result['success'] && queueNeedsPrinting($settings) !== null) {
     $result['message'] = 'Check the printer!';
 }
 
 echo json_encode($result);
+
+if (queueNeedsPrinting($settings) !== null) {
+    ignore_user_abort(true);
+    if (function_exists('fastcgi_finish_request')) {
+        if (!fastcgi_finish_request()) {
+            error_log('Could not execute fastcgi_finish_request()', 4);
+        }
+    }
+
+    paperPrinted($settings);
+}
+
+exit(0);
 
 function getFilename(string $path, string $ext): string {
     $date = new DateTimeImmutable();
@@ -141,11 +154,20 @@ function scaleImage(&$image, object $settings) {
     }
 }
 
-function paperPrinted(object $settings): bool {
+function queueNeedsPrinting(object $settings): array|null {
     $queuingFilenames = glob($settings->get('tempQueuingImages') . DIRECTORY_SEPARATOR . '*.png');
     $imagesPerSheet = $settings->get('imagesHorisontallyOnPaper') * $settings->get('imagesVerticallyOnPaper');
 
-    if (count($queuingFilenames) < $imagesPerSheet) {
+    if (count($queuingFilenames) >= $imagesPerSheet) {
+        return $queuingFilenames;
+    }
+
+    return null;
+}
+
+function paperPrinted(object $settings): bool {
+    $queuingFilenames = queueNeedsPrinting($settings);
+    if ($queuingFilenames == null) {
         return false;
     }
 
