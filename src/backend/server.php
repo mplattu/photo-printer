@@ -142,23 +142,48 @@ function scaleImage(&$image, object $settings) {
 }
 
 function paperPrinted(object $settings): bool {
-    $filenames = glob($settings->get('tempQueuingImages') . DIRECTORY_SEPARATOR . '*.png');
+    $queuingFilenames = glob($settings->get('tempQueuingImages') . DIRECTORY_SEPARATOR . '*.png');
     $imagesPerSheet = $settings->get('imagesHorisontallyOnPaper') * $settings->get('imagesVerticallyOnPaper');
 
-    if (count($filenames) < $imagesPerSheet) {
+    if (count($queuingFilenames) < $imagesPerSheet) {
         return false;
     }
 
-    $pdfString = createImagePDF($filenames, $settings);
+    $jobId = uuidv4();
+    $jobPath = $settings->get('tempQueuingImages') . DIRECTORY_SEPARATOR . $jobId;
+    $jobFilenames = moveImagesToJobDirectory($queuingFilenames, $jobPath, $settings);
+
+    $pdfString = createImagePDF($jobFilenames, $settings);
 
     file_put_contents(getFilename($settings->get('tempFinalPDFs'), 'pdf'), $pdfString);
     printToIPPQueue($pdfString, $settings);
 
-    if (!unlinkAll($filenames)) {
-        throw new \Exception("Failed to remove queueing images after PDF has been printed");
+    if (!unlinkAll($jobFilenames)) {
+        throw new \Exception("Failed to remove job image files after PDF has been printed");
+    }
+
+    if (!rmdir($jobPath)) {
+        throw new \Exception("Could not remove job image directory after PDF has been printed");
     }
 
     return true;
+}
+
+function moveImagesToJobDirectory(array $imageFilenames, string $jobPath, object $settings): array {
+    ensureDirectoryExists($jobPath, $settings->get('tempDirectoryPermissions'));
+
+    $jobFilenames = [];
+    foreach ($imageFilenames as $imageFilename) {
+        $jobFilename = $jobPath . DIRECTORY_SEPARATOR . basename($imageFilename);
+
+        if (!rename($imageFilename, $jobFilename)) {
+            throw new \Exception("Could not rename image file $imageFilename to $jobFilename");
+        }
+
+        $jobFilenames[] = $jobFilename;
+    }
+
+    return $jobFilenames;
 }
 
 function createImagePDF(array $filenames, object $settings): string {
@@ -184,6 +209,15 @@ function createImagePDF(array $filenames, object $settings): string {
 function printToIPPQueue(string $pdfDocument, object $settings): void {
     $printer = new \obray\ipp\Printer($settings->get('ippPrinterURI'));
     $printer->printJob($pdfDocument, 1, ['document-format' => 'application/pdf']);
+}
+
+function uuidv4() {
+    $data = random_bytes(16);
+
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+        
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 
 class Settings {
