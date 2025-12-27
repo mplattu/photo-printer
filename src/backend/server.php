@@ -41,7 +41,7 @@ if (queueNeedsPrinting($settings) !== null) {
         }
     }
 
-    paperPrinted($settings);
+    processQueue($settings);
 }
 
 exit(0);
@@ -165,7 +165,7 @@ function queueNeedsPrinting(object $settings): array|null {
     return null;
 }
 
-function paperPrinted(object $settings): bool {
+function processQueue(object $settings): bool {
     $queuingFilenames = queueNeedsPrinting($settings);
     if ($queuingFilenames == null) {
         return false;
