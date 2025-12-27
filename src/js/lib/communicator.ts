@@ -38,6 +38,7 @@ export class Communicator {
             if (!response.ok) {
                 this.showMessage('Error', 'Network response was not ok')
                 console.error('Network response was not ok', response.status);
+                document.dispatchEvent(new Event('enableCameraButtons'))
                 return
             }
 
