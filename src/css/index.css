@@ -25,3 +25,10 @@
     right: 10px;
     bottom: 10px;
 }
+
+#switchCamera {
+    z-index: 1;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}

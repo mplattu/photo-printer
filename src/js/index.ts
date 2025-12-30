@@ -22,6 +22,47 @@ const getServerURL = (): string => {
 }
 
 window.addEventListener('load', async () => {
+    const setupButtonTakePhoto = (): void => {
+        const elButtonTakePhoto = document.getElementById('takePhoto') as HTMLInputElement
+        if (elButtonTakePhoto) {
+            elButtonTakePhoto.addEventListener('click', () => {
+                document.dispatchEvent(new Event('disableCameraButtons'))
+                camera.captureImage(communicator.sendImage)
+            })
+        } else {
+            console.error('Did not find takePhoto button')
+        }
+    }
+
+    const setButtonSwitchCameraLegend = (): void  => {
+        const numberOfCameras = camera.numberOfCameras()
+        const currentCameraNumber = 1+camera.currentCameraIndex
+
+        const elButtonSwitchCamera = document.getElementById('switchCamera') as HTMLInputElement
+        if (elButtonSwitchCamera) {
+            elButtonSwitchCamera.textContent = `Camera ${currentCameraNumber}/${numberOfCameras}`
+        }
+    }
+
+    const setupButtonSwitchCamera = (numberOfCameras: number): void => {
+        const elButtonSwitchCamera = document.getElementById('switchCamera') as HTMLInputElement
+        if (elButtonSwitchCamera) {
+            if (numberOfCameras < 2) {
+                elButtonSwitchCamera.style.display = 'none'
+            } else {
+                elButtonSwitchCamera.style.display = 'block'
+                setButtonSwitchCameraLegend()
+            }
+
+            elButtonSwitchCamera.addEventListener('click', () => {
+                camera.switchCamera()
+                setButtonSwitchCameraLegend()
+            })
+        } else {
+            console.error('Did not find switchCamera button')
+        }
+    }
+
     document.addEventListener('disableCameraButtons', () => {
         const elButtonTakePhoto = document.getElementById('takePhoto') as HTMLInputElement
         if (elButtonTakePhoto) { elButtonTakePhoto.disabled = true; }
@@ -49,7 +90,8 @@ window.addEventListener('load', async () => {
 
     const camera = new Camera('video', 'canvas')
     if (camera.isCameraAvailable()) {
-        await camera.startCamera()
+        const numberOfCameras = await camera.startCamera()
+        setupButtonSwitchCamera(numberOfCameras)
     }
     else {
         document.dispatchEvent(
@@ -62,14 +104,6 @@ window.addEventListener('load', async () => {
         )
     }
 
-    const elButtonTakePhoto = document.getElementById('takePhoto') as HTMLInputElement
-    if (elButtonTakePhoto) {
-        elButtonTakePhoto.addEventListener('click', () => {
-            document.dispatchEvent(new Event('disableCameraButtons'))
-            camera.captureImage(communicator.sendImage)
-        })
-    } else {
-        console.error('Did not find takePhoto button')
-    }
+    setupButtonTakePhoto()
 })
 
