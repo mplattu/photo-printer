@@ -1,19 +1,17 @@
-# webapp
+# Photo Printer
 
-MobiiliPassi webapp is HTML5 application written in TypeScript. At the moment
-is does not utilise any web development framework.
+## Publishing
 
-## Development environment
+The publishing is done over ssh connection.
 
- 1. Install [nvm](https://github.com/nvm-sh/nvm)
- 1. (Install and) activate NodeJS version specified in `.nvmrc` by issuing command `nvm use`
- 1. Install npm package dependencies: `npm install`
-
-After this you can use rules in `Makefile`:
- * `make build` - Build the webapp to `build/`
- * `make publish` - Publish the code in `build/` to test server
- * `make start` - Run the PHP test server, which stores the images to `/tmp/mp_webapp`
-
-## Configuration
-
- * You can specify the backend URL in the query parameter: `https://localhost:8080?server=https://another.dev/backend`. This requires some CORS settings to work.
+ 1. Create `settings.mk` with following template:
+    ```
+    PUBLISH_REMOTE_SERVER:=your-server.com
+    PUBLISH_COPY_ZIP_TO:=/tmp
+    PUBLISH_TARGET_DIR:=/path/to/photo-printer-app
+    PUBLISH_PREV_ZIP_TO:=/tmp/photo-printer-app-prev.zip
+    ```
+    * `PUBLISH_REMOTE_SERVER` - the server address given to ssh to connect
+    * `PUBLISH_COPY_ZIP_TO` - where the publish script copies (and leaves) the application script
+    * `PUBLISH_TARGET_DIR` - a path to your application
+    * `PUBLISH_PREV_ZIP_TO` - where the publish script stores the previous published application version

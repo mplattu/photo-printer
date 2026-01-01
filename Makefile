@@ -33,8 +33,15 @@ start:
 .PHONY: build
 build: build/index.html build/index.js build/server.php
 
+include settings.mk
+
 :PHONY: publish
 publish:
-	ssh septit.net rm -fR stadi.ninja/kamera/
-	ssh septit.net mkdir stadi.ninja/kamera/
-	scp build/* septit.net:stadi.ninja/kamera/
+	if [ -f photo-printer-app.zip ]; then rm photo-printer-app.zip; fi
+	cd build; zip -ry9 ../photo-printer-app.zip * -x settings.php
+	scp photo-printer-app.zip $(PUBLISH_REMOTE_SERVER):$(PUBLISH_COPY_ZIP_TO)/
+	ssh $(PUBLISH_REMOTE_SERVER) rm -f $(PUBLISH_PREV_ZIP_TO)
+	ssh $(PUBLISH_REMOTE_SERVER) "cd $(PUBLISH_TARGET_DIR); zip -ry9 $(PUBLISH_PREV_ZIP_TO) *"
+	ssh $(PUBLISH_REMOTE_SERVER) rm -fR $(PUBLISH_TARGET_DIR)/*
+	ssh $(PUBLISH_REMOTE_SERVER) unzip photo-printer-app.zip -d $(PUBLISH_TARGET_DIR)
+	ssh $(PUBLISH_REMOTE_SERVER) unzip $(PUBLISH_PREV_ZIP_TO) settings.php -d $(PUBLISH_TARGET_DIR)
