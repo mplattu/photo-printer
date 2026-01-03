@@ -92,3 +92,8 @@ The publishing is done over ssh connection.
     * `PUBLISH_COPY_ZIP_TO` - where the publish script copies (and leaves) the application script
     * `PUBLISH_TARGET_DIR` - a path to your application
     * `PUBLISH_PREV_ZIP_TO` - where the publish script stores the previous published application version
+
+## Acknowledgements
+
+ * Spinner icon `src/html/spinner.gif`: https://ena.our-dogs.info/facts-f.html
+ 

@@ -18,11 +18,12 @@ build/settings.php:
 build/server.php: build/vendor/autoload.php src/backend/server.php build/settings.php
 	cp src/backend/server.php build/
 
-build/index.html: src/html/*
+.PHONY: html
+html: src/html/*
 	if [ ! -d build/ ]; then mkdir build/; fi
 	cp src/html/* build/
 
-build/index.js: lint-js src/js/*
+build/index.js: lint-js src/js/* src/css/*
 	if [ ! -d build/ ]; then mkdir build/; fi
 	-rm build/index.js*
 	node ./esbuild.mjs
@@ -31,7 +32,7 @@ start:
 	php -S localhost:8080 -t build/
 
 .PHONY: build
-build: build/index.html build/index.js build/server.php
+build: html build/index.js build/server.php
 
 include settings.mk
 

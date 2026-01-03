@@ -65,12 +65,34 @@ window.addEventListener('load', async () => {
 
     document.addEventListener('disableCameraButtons', () => {
         const elButtonTakePhoto = document.getElementById('takePhoto') as HTMLInputElement
-        if (elButtonTakePhoto) { elButtonTakePhoto.disabled = true; }
+        if (elButtonTakePhoto) { elButtonTakePhoto.disabled = true }
+
+        const elVideo = document.getElementById('video') as HTMLVideoElement
+        if (elVideo) {
+            elVideo.pause()
+            elVideo.style.opacity = '0.5'
+        }
+
+        const elSpinner = document.getElementById('spinner') as HTMLImageElement
+        if (elSpinner) {
+            elSpinner.style.display = 'block'
+        }
     })
 
     document.addEventListener('enableCameraButtons', () => {
         const elButtonTakePhoto = document.getElementById('takePhoto') as HTMLInputElement
-        if (elButtonTakePhoto) { elButtonTakePhoto.disabled = false; }
+        if (elButtonTakePhoto) { elButtonTakePhoto.disabled = false }
+
+        const elVideo = document.getElementById('video') as HTMLVideoElement
+        if (elVideo) {
+            elVideo.play()
+            elVideo.style.opacity = '1'
+        }
+
+        const elSpinner = document.getElementById('spinner') as HTMLImageElement
+        if (elSpinner) {
+            elSpinner.style.display = 'none'
+        }
     })
 
     document.addEventListener('showModal', ((event: CustomEvent): void => {
